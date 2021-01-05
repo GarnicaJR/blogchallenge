@@ -4,55 +4,36 @@ import javax.ws.rs.core.UriInfo;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Link {
 
-    private Href first  = new Href();
-    private Href prev = new Href();
-    private Href last = new Href();
-    private Href self = new Href();
+    public static <T> Map<String, Href> of(UriInfo request, PanacheQuery<T> pquery, Class<T> type) {
 
+        Map<String, Href> links = new HashMap<>();
+        String fullPath = request.getAbsolutePath().toString();
 
-    public static <T> Link of(UriInfo uriInfo,PanacheQuery<T> pquery,Class<T> type){
-        Link link = new Link();
-        link.getFirst().setHref(uriInfo.getAbsolutePath().toString()+"?page=0&size="+pquery.page().size);
-        link.getPrev().setHref(uriInfo.getAbsolutePath().toString()+"?page=0&size="+pquery.page().size);
-        link.getLast().setHref(uriInfo.getAbsolutePath().toString()+"?page=0&size="+pquery.page().size);
-        link.getSelf().setHref(uriInfo.getAbsolutePath().toString());
-        return link;
+        links.put("first", new Href(fullPath + "?page=0" + "&size=" + pquery.page().size));
+
+        int indexPage = pquery.page().index;
+        if (indexPage > 0) {
+            links.put("prev", new Href(fullPath + "?page=" + (indexPage - 1) + "&size=" + pquery.page().size));
+        }
+
+        if (indexPage < (pquery.pageCount() - 1)) {
+            links.put("next", new Href(fullPath + "?page=" + (indexPage + 1) + "&size=" + pquery.page().size));
+        }
+
+        links.put("last", new Href(fullPath + "?page=" + (pquery.pageCount() - 1) + "&size=" + pquery.page().size));
+
+        if (request.getRequestUri().getQuery() != null) {
+            links.put("self", new Href(request.getAbsolutePath().toString() + "?" + request.getRequestUri().getQuery()));
+        } else {
+            links.put("self", new Href(fullPath + "?page=0" + "&size=" + pquery.page().size));
+        }
+        return links;
     }
-
-    public Href getFirst() {
-        return first;
-    }
-
-    public void setFirst(Href first) {
-        this.first = first;
-    }
-
-    public Href getPrev() {
-        return prev;
-    }
-
-    public void setPrev(Href prev) {
-        this.prev = prev;
-    }
-
-    public Href getLast() {
-        return last;
-    }
-
-    public void setLast(Href last) {
-        this.last = last;
-    }
-
-    public Href getSelf() {
-        return self;
-    }
-
-    public void setSelf(Href self) {
-        this.self = self;
-    }
-    
 }
 
 

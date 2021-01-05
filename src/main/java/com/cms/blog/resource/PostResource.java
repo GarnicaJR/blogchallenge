@@ -27,15 +27,13 @@ import com.cms.blog.repository.PostRepository;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import org.jboss.resteasy.spi.HttpRequest;
 
 @Path("/posts")
 public class PostResource {
 
 
     private PostRepository postRepository;
-
-    @Context UriInfo uriInfo;
-
 
     @Inject
     public PostResource(PostRepository postRepository){
@@ -47,20 +45,21 @@ public class PostResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPosts(
         @DefaultValue("0")  @QueryParam("page") int pageIndex,
-        @DefaultValue("25") @QueryParam("size") int pageSize)
+        @DefaultValue("10") @QueryParam("size") int pageSize,
+        @Context UriInfo request)
     {
         PanacheQuery<Post> query = postRepository.findAll();
         query.page(pageIndex, pageSize);
 
-        Map<String, Object> payload = generateHateoas(query);        
+        Map<String, Object> payload = generateHateoas(query,request);
         return Response.status(Status.OK).entity(payload).build();
     }
 
 
-    private Map<String, Object> generateHateoas(PanacheQuery<Post> query) {
+    private Map<String, Object> generateHateoas(PanacheQuery<Post> query,  UriInfo  request) {
         Map<String,Object> payload = new HashMap<>();
         payload.put("posts",query.list());
-        payload.put("_links", Link.of(uriInfo,query,Post.class));
+        payload.put("_links", Link.of(request,query,Post.class));
         payload.put("page", com.cms.blog.hateoas.Page.of(query,Post.class));
         return payload;
     }
