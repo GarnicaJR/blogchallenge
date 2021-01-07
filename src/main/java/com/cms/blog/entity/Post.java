@@ -16,9 +16,17 @@ public class Post {
 
     private String title;
 
-    LocalDateTime createAt;
-
     private String content;
+
+    private LocalDateTime updated;
+
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
 
     public Long getId() {
         return id;
@@ -36,14 +44,6 @@ public class Post {
         this.title = title;
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
-    }
-
     public String getContent() {
         return content;
     }
@@ -51,4 +51,5 @@ public class Post {
     public void setContent(String content) {
         this.content = content;
     }
+
 }
