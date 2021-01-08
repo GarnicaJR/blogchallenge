@@ -11,17 +11,18 @@ import javax.enterprise.context.RequestScoped;
 @RequestScoped
 public class TokenUtils {
 
-    public String generateToken(String username, Set<Role> roles){
-        
+    public String generateToken(String username, Set<Role> roles, String issuer) {
+
         JwtClaimsBuilder claimsBuilder = Jwt.claims();
 
         Set<String> groups = new HashSet<>();
-        for(Role role: roles) groups.add(role.toString());
-        
+        for (Role role : roles) groups.add(role.toString());
+
 
         claimsBuilder.upn(username);
+        claimsBuilder.issuer(issuer);
         claimsBuilder.groups(groups);
         return claimsBuilder.sign();
     }
-    
+
 }

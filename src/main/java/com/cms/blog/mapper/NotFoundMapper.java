@@ -13,7 +13,11 @@ public class NotFoundMapper implements ExceptionMapper<NotFoundException> {
     public Response toResponse(NotFoundException exception) {
         int code = 404;
         return Response.status(code)
-                .entity(Json.createObjectBuilder().add("error", exception.getMessage()).add("code", code).build())
+                .entity(Json.createObjectBuilder().add("error", getMessage()).add("code", code).build())
                 .build();
+    }
+
+    private String getMessage(){
+        return "Resource no found";
     }
 }

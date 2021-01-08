@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import com.cms.blog.dto.PostDto;
 import com.cms.blog.entity.Post;
@@ -34,7 +32,7 @@ public class PostResource {
     }
 
 
-    @RolesAllowed("USER")
+    @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(
@@ -42,6 +40,7 @@ public class PostResource {
         @DefaultValue("10") @QueryParam("size") int pageSize,
         @Context UriInfo request)
     {
+
         PanacheQuery<Post> query = postRepository.findAll();
 
         if(query.count() == 0){
