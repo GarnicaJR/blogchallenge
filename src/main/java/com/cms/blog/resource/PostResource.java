@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.ReportAsSingleViolation;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -34,6 +34,7 @@ public class PostResource {
     }
 
 
+    @RolesAllowed("USER")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(
@@ -53,6 +54,7 @@ public class PostResource {
     }
 
 
+    @RolesAllowed("USER")
     @GET
     @Path("{id}")
     public Response findById(@PathParam("id") Long id){
@@ -62,6 +64,7 @@ public class PostResource {
     }
 
 
+    @RolesAllowed("USER")
     @Transactional
     @DELETE
     @Path("{id}")
@@ -74,6 +77,7 @@ public class PostResource {
         return Response.status(Status.NO_CONTENT).build();
     }
 
+    @RolesAllowed("USER")
     @Transactional
     @PUT
     @Path("{id}")
@@ -91,6 +95,7 @@ public class PostResource {
     }
 
 
+    @RolesAllowed("USER")
     @Transactional
     @POST
     @Produces(MediaType.APPLICATION_JSON)
